@@ -1,0 +1,138 @@
+{
+   "name": "celeborn_dra_template",
+   "jobTemplateData": {
+        "executionRoleArn": "${EmrRoleARN}", 
+        "releaseLabel": "emr-6.10.0-latest",
+        "jobDriver": {
+            "sparkSubmitJobDriver": { 
+                "entryPoint": "local:///usr/lib/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar",
+                "entryPointArguments": ["${DataLocation}","/opt/tpcds-kit/tools","parquet","3000","1","false","${QueryList}","true"],
+                "sparkSubmitParameters": "--class com.amazonaws.eks.tpcds.BenchmarkSQL --conf spark.driver.cores=2 --conf spark.driver.memory=3g --conf spark.executor.cores=4 --conf spark.executor.memory=6g"
+            }
+        },
+        "configurationOverrides": {
+            "applicationConfiguration": [
+            {
+                "classification": "spark-defaults",
+                "properties": {
+                  "spark.kubernetes.container.image": "${CustomImageURI}",
+                  "spark.network.timeout": "2000s",
+                  "spark.kubernetes.submission.connectionTimeout": "60000000",
+                  "spark.kubernetes.submission.requestTimeout": "60000000",
+                  "spark.kubernetes.driver.connectionTimeout": "60000000",
+                  "spark.kubernetes.driver.requestTimeout": "60000000",
+                  "spark.executor.heartbeatInterval": "300s",
+                  "spark.kubernetes.executor.podNamePrefix": "${PodNamePrefix}",
+                  "spark.kubernetes.node.selector.NodeGroupType": "${EKSNodegroup}",
+                  "spark.driver.memoryOverhead": "1000",
+                  "spark.executor.memoryOverhead": "2G",
+
+                  "spark.shuffle.service.enabled": "false",
+                  "spark.serializer": "org.apache.spark.serializer.KryoSerializer",
+                  "spark.dynamicAllocation.shuffleTracking.enabled": "${DRA_shuffleTracking}",
+                  "spark.dynamicAllocation.enabled": "${DRA_enabled}",
+                  "spark.sql.adaptive.localShuffleReader.enabled": "${AQE_localShuffleReader}",
+                  "spark.dynamicAllocation.minExecutors": "1",
+                  "spark.dynamicAllocation.maxExecutors": "50",
+                  "spark.dynamicAllocation.executorIdleTimeout": "${DRA_executorIdleTimeout}",
+                  "spark.dynamicAllocation.shuffleTracking.timeout": "${DRA_trackingTimeout}",
+                  "spark.dynamicAllocation.executorAllocationRatio": "0.5",
+
+                  "spark.shuffle.manager": "org.apache.spark.shuffle.celeborn.SparkShuffleManager",
+                  "spark.celeborn.master.endpoints": "${RSS_server}",
+                  "spark.shuffle.sort.io.plugin.class": "${RSS_shuffle_io}",
+                  "spark.celeborn.client.spark.push.unsafeRow.fastWrite.enabled": "false",
+                  "spark.celeborn.shuffle.chunk.size": "4m",
+                  "spark.celeborn.client.push.maxReqsInFlight": "128",
+                  "spark.celeborn.rpc.askTimeout": "240s",
+                  "spark.celeborn.client.push.replicate.enabled": "false",
+                  "spark.celeborn.client.push.excludeWorkerOnFailure.enabled": "true",
+                  "spark.celeborn.client.fetch.excludeWorkerOnFailure.enabled": "true",
+                  "spark.celeborn.client.commitFiles.ignoreExcludedWorker": "true",
+
+                  "spark.metrics.appStatusSource.enabled": "true",
+                  "spark.ui.prometheus.enabled": "true",
+                  "spark.executor.processTreeMetrics.enabled": "true",
+                  "spark.kubernetes.driver.annotation.prometheus.io/scrape": "true",
+                  "spark.kubernetes.driver.annotation.prometheus.io/path": "/metrics/executors/prometheus/",
+                  "spark.kubernetes.driver.annotation.prometheus.io/port": "4040",
+                  "spark.kubernetes.driver.service.annotation.prometheus.io/scrape": "true",
+                  "spark.kubernetes.driver.service.annotation.prometheus.io/path": "/metrics/driver/prometheus/",
+                  "spark.kubernetes.driver.service.annotation.prometheus.io/port": "4040",
+                  "spark.metrics.conf.*.sink.prometheusServlet.class": "org.apache.spark.metrics.sink.PrometheusServlet",
+                  "spark.metrics.conf.*.sink.prometheusServlet.path": "/metrics/driver/prometheus/",
+                  "spark.metrics.conf.master.sink.prometheusServlet.path": "/metrics/master/prometheus/",
+                  "spark.metrics.conf.applications.sink.prometheusServlet.path": "/metrics/applications/prometheus/"
+            }},
+            {
+                "classification": "spark-log4j",
+                "properties": {
+                  "rootLogger.level" : "${LoggerLevel}"
+                }
+            }], 
+            "monitoringConfiguration": {
+                "persistentAppUI": "ENABLED"
+            }
+        },
+        "jobTags": { 
+            "name" : "rss-dra-test" 
+        },
+        "parameterConfiguration": {
+            "EmrRoleARN":{
+                "type": "STRING"
+            },
+            "DataLocation":{
+                "type": "STRING"
+            },
+            "PodNamePrefix": {
+                "type": "STRING",
+                "defaultValue": "emrkes-tpcds"
+            },
+            "QueryList":{
+                "type": "STRING"
+            },
+            "CustomImageURI":{
+                "type": "STRING"
+            },
+            "EKSNodegroup":{
+                "type": "STRING"
+            },
+            "DRA_enabled": {
+                "type": "STRING",
+                "defaultValue": "false"
+            },
+            "DRA_executorIdleTimeout":{
+                "type": "STRING",
+                "defaultValue": "60"
+            },
+            "DRA_trackingTimeout":{
+                "type": "STRING",
+                "defaultValue": "24h"
+            },
+            "DRA_shuffleTracking":{
+                "type": "STRING",
+                "defaultValue": "true"
+            },
+            "AQE_localShuffleReader": {
+                "type": "STRING",
+                "defaultValue": "true"
+            },
+            "LoggerLevel":{
+                "type": "STRING",
+                "defaultValue": "INFO"
+            },
+            "LogS3BucketUri": {
+                "type": "STRING"
+            },
+            "RSS_shuffle_io": {
+                "type": "STRING",
+                "defaultValue": "org.apache.spark.shuffle.sort.io.LocalDiskShuffleDataIO"
+            },
+            "RSS_server": {
+                "type": "STRING",
+                "defaultValue": "celeborn-master-0.celeborn-master-svc.celeborn:9097,celeborn-master-1.celeborn-master-svc.celeborn:9097,celeborn-master-2.celeborn-master-svc.celeborn:9097"
+
+            }
+        }
+    }
+}
