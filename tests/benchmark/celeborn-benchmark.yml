@@ -16,8 +16,8 @@ spec:
   mainApplicationFile: local:///usr/lib/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar
   arguments:
     #- "s3://<ENTER_S3_BUCKET>/TPCDS-TEST-3T"
-    - "s3://emr-on-eks-karpenter-emr-20250701145943686900000002/TPCDS-TEST-3T"
-    - "s3://emr-on-eks-karpenter-emr-20250701145943686900000002/TPCDS-TEST-3T-RESULT"
+    - "s3://<S3_BUCKET>/TPCDS-TEST-3T"
+    - "s3://<S3_BUCKET>/TPCDS-TEST-3T-RESULT"
     - "/opt/tpcds-kit/tools"
     - "parquet"
     - "3000"
@@ -118,7 +118,7 @@ spec:
   driver:
     cores: 2
     memory: "3g"
-    serviceAccount: "emr-containers-sa-spark-driver-724853865853-4zkb3o3t2637sxptka3fkr5y9kijxuvmbz532b49smj1yzyykvuh0go1"
+    serviceAccount: <SERVICE_ACCOUNT>
     # Using Karpenter provisioner nodeSelectors and tolerations
     nodeSelector:
       NodeGroupType: "SparkComputeOptimized"
@@ -130,7 +130,7 @@ spec:
     cores: 8
     instances: 2
     memory: "16g"
-    serviceAccount: "emr-containers-sa-spark-executor-724853865853-4zkb3o3t2637sxptka3fkr5y9kijxuvmbz532b49smj1yzyykvuh0go1"
+    serviceAccount: <SERVICE_ACCOUNT>
     # Using Karpenter provisioner nodeSelectors and tolerations
     nodeSelector:
       NodeGroupType: "SparkComputeOptimized"
