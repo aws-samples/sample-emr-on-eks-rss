@@ -9,7 +9,42 @@ In this repo, we select Aapche Celeborn as the remote shuffle service for EMR on
 
 ## Getting started
 
-### Clone the repo
+### Prerequisites
+
+Before we begin, ensure that you have installed the following tools on your machine.
+
+1. AWS Command Line Interface (AWS CLI)
+2. Kubectl
+3. Terraform
+
+### Clone the repository and initialize the environment
+
+Make sure you have proper aws privileges, your desired deployment AWS Region in the variables.tf file before deploying the blueprint. 
+```shell
+git clone https://github.com/awslabs/data-on-eks.git
+cd ./data-on-eks/analytics/terraform/emr-eks-karpenter
+terraform init
+```
+
+To deploy the EMR Spark Operator Add-on. You need to set the the below value to true in variables.tf file.
+```shell
+variable "enable_emr_spark_operator" {
+  description = "Enable the Spark Operator to submit jobs with EMR Runtime"
+  default     = true
+  type        = bool
+}
+```
+
+### Deploy the pattern
+
+The following command will create a few AWS resources, like new Amazon VPC, one Amazon EKS Cluster, Kubernetes resources like Karpenter, IAM roles used by Spark Pod, Amazon S3 bucket, Amazon Managed Prometheus(AMP) and etc.
+```shell
+terraform apply --auto-approve
+```
+This installation takes approximately 20 minutes to complete. If the installation doesn’t complete successfully for any reason, then you can try re-running the script to apply the Terraform templates or access troubleshooting section.
+
+
+### Install Celeborn with Data on EKS
 
 ```shell
 git clone https://github.com/aws-samples/sample-emr-on-eks-rss
