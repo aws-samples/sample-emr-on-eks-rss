@@ -22,6 +22,5 @@ metadata:
   name: {{ include "celeborn.masterPriorityClassName" . }}
   labels:
     {{- include "celeborn.labels" . | nindent 4 }}
-# Fixed: Proper indentation for YAML structure
 value: {{ .Values.priorityClass.master.value }}
 {{- end }}

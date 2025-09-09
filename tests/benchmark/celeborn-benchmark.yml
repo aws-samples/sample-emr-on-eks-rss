@@ -15,8 +15,7 @@ spec:
   mainClass: com.amazonaws.eks.tpcds.BenchmarkSQL
   mainApplicationFile: local:///usr/lib/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar
   arguments:
-    # Security Fix: Added documentation for placeholder values
-    # Replace <S3_BUCKET> with your S3 bucket name (e.g., my-company-data-bucket)
+    #- "s3://<ENTER_S3_BUCKET>/TPCDS-TEST-3T"
     - "s3://<S3_BUCKET>/TPCDS-TEST-3T"
     - "s3://<S3_BUCKET>/TPCDS-TEST-3T-RESULT"
     - "/opt/tpcds-kit/tools"
@@ -39,19 +38,17 @@ spec:
     # -----------------------------------------------------
     # Kubernetes timeout configurations
     spark.kubernetes.local.dirs.tmpfs: "true"
-    # Security Fix: Reduced from 16.7 hours to reasonable 5-minute timeouts
-    spark.kubernetes.submission.connectionTimeout: "300000"
-    spark.kubernetes.submission.requestTimeout: "300000"
-    spark.kubernetes.driver.connectionTimeout: "300000"
-    spark.kubernetes.driver.requestTimeout: "300000"
+    spark.kubernetes.submission.connectionTimeout: "60000000"
+    spark.kubernetes.submission.requestTimeout: "60000000"
+    spark.kubernetes.driver.connectionTimeout: "60000000"
+    spark.kubernetes.driver.requestTimeout: "60000000"
     spark.network.timeout: "2000s"
     spark.executor.heartbeatInterval: "300s"
     # -----------------------------------------------------
 
     # Event logging
     spark.eventLog.enabled: "true"
-    # Security Fix: Parameterized bucket name to prevent bucket sniping vulnerability
-    spark.eventLog.dir: "s3://<EVENT_LOG_BUCKET>/spark-events/"
+    spark.eventLog.dir: "s3://emr-on-eks-karpenter-emr-20250701145943686900000002/spark-events/"
     spark.kubernetes.driver.pod.name: "driver-celeborn-tpcds-benchmark"
     spark.kubernetes.executor.podNamePrefix: "clb-dra-track"
 
@@ -66,8 +63,7 @@ spec:
     spark.sql.emr.internal.extensions: "com.amazonaws.emr.spark.EmrSparkSessionExtensions"
 
     # Memory and performance configurations
-    # Security Fix: Increased driver memory overhead for better balance
-    spark.driver.memoryOverhead: "2G"
+    spark.driver.memoryOverhead: "1000"
     spark.executor.memoryOverhead: "2G"
     spark.executor.defaultJavaOptions: "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+UseParallelGC -XX:InitiatingHeapOccupancyPercent=70 -XX:OnOutOfMemoryError='kill -9 %p'"
     spark.driver.defaultJavaOptions: "-XX:OnOutOfMemoryError='kill -9 %p' -XX:+UseParallelGC -XX:InitiatingHeapOccupancyPercent=70"
@@ -81,9 +77,8 @@ spec:
     spark.dynamicAllocation.shuffleTracking.enabled: "true"
     spark.dynamicAllocation.minExecutors: "1"
     spark.dynamicAllocation.maxExecutors: "50"
-    # Security Fix: Increased from 5s to 30s for better stability and reduced executor churn
-    spark.dynamicAllocation.executorIdleTimeout: "30s"
-    spark.dynamicAllocation.shuffleTracking.timeout: "30s"
+    spark.dynamicAllocation.executorIdleTimeout: "5s"
+    spark.dynamicAllocation.shuffleTracking.timeout: "5s"
     spark.dynamicAllocation.executorAllocationRatio: "0.5"
 
     # Adaptive Query Execution (AQE) configurations
@@ -122,9 +117,7 @@ spec:
     type: Never
   driver:
     cores: 2
-    # Security Fix: Increased memory from 3g to 8g for 3TB TPCDS benchmark
-    memory: "8g"
-    # Replace <SERVICE_ACCOUNT> with your Kubernetes service account name
+    memory: "3g"
     serviceAccount: <SERVICE_ACCOUNT>
     # Using Karpenter provisioner nodeSelectors and tolerations
     nodeSelector:
@@ -137,7 +130,6 @@ spec:
     cores: 8
     instances: 2
     memory: "16g"
-    # Replace <SERVICE_ACCOUNT> with your Kubernetes service account name
     serviceAccount: <SERVICE_ACCOUNT>
     # Using Karpenter provisioner nodeSelectors and tolerations
     nodeSelector:

@@ -58,10 +58,8 @@ spec:
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        # Security Fix: Removed root user, using fsGroup for volume permissions
         securityContext:
-          runAsUser: 10006
-          runAsGroup: 10006
+          runAsUser: 0
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -83,10 +81,10 @@ spec:
             echo "waiting for master"; 
             sleep 2;
           done && exec /opt/celeborn/sbin/start-master.sh
-        # Security Fix: Removed duplicate resources specification
+        resources:
+          {{- toYaml .Values.resources.master | nindent 10 }}
         ports:
-        - name: rpc
-          containerPort: {{ .Values.service.port }}
+        - containerPort: {{ .Values.service.port }}
         - containerPort: {{ get .Values.celeborn "celeborn.master.http.port" | default 9098 }}
           name: metrics
           protocol: TCP

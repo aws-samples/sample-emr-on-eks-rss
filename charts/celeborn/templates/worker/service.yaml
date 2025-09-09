@@ -28,8 +28,5 @@ spec:
     {{- include "celeborn.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/role: worker
   type: {{ .Values.service.type }}
-  # Security Fix: Only set clusterIP None for explicitly headless services
-  {{- if and (eq .Values.service.type "ClusterIP") (.Values.service.headless | default false) }}
   clusterIP: None
-  {{- end }}
   {{- include "celeborn.workerServicePort" . | nindent 2 }}

@@ -172,8 +172,7 @@ tests:
           path: spec.template.spec.hostNetwork
           value: true
 
-  # Security Fix: Updated description to match actual parameter being tested
-  - it: Should use the specified security context if `securityContext` is set
+  - it: Should use the specified security context if `podSecurityContext` is set
     set:
       securityContext:
         runAsUser: 1000

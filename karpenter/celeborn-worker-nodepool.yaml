@@ -1,13 +1,11 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  # Security Fix: Renamed to reflect Intel architecture instead of misleading graviton
-  name: celeborn-worker-intel
+  name: celeborn-worker-graviton
 spec:
   disruption:
     budgets:
-    # Security Fix: Reduced from 100% to 50% to maintain service availability during maintenance
-    - nodes: 50%
+    - nodes: 100%
     consolidateAfter: 30s
     consolidationPolicy: WhenEmpty
   limits:
@@ -16,31 +14,25 @@ spec:
     metadata:
       labels:
         NodeGroupType: CelebornWorker 
-        provisioner: celeborn-worker-intel
+        provisioner: celeborn-worker-graviton
         type: karpenter
     spec:
       expireAfter: 'Never'
       nodeClassRef:
         group: karpenter.k8s.aws  # Updated since only a single version will be served
         kind: EC2NodeClass
-        name: celeborn-worker-intel
+        name: celeborn-worker-graviton
       requirements:
-      # Security Fix: Added multiple AZs for high availability and fault tolerance
       - key: topology.kubernetes.io/zone
         operator: In
         values:
         - us-west-2a
-        - us-west-2b
-        - us-west-2c
       - key: karpenter.sh/capacity-type
         operator: In
         values:
         - on-demand
-      # Security Fix: Added multiple instance types for better provisioning flexibility
       - key: node.kubernetes.io/instance-type
         operator: In
         values:
-        - i3en.xlarge
         - i3en.2xlarge
-        - i3en.4xlarge
   weight: 10

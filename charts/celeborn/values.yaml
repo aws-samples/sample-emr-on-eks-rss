@@ -32,8 +32,7 @@ image:
   # -- Image tag
   tag: 0.5 
   # -- Image pull policy
-  # Security Fix: Changed from Always to IfNotPresent for better performance
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 # -- Image pull secrets for private image registry
 imagePullSecrets: []
@@ -48,8 +47,6 @@ service:
   type: ClusterIP
   # -- Specifies service port
   port: 9097
-  # -- Enable headless service (sets clusterIP: None)
-  headless: true
 
 cluster:
   # -- Specifies Kubernetes cluster name
@@ -83,8 +80,7 @@ celeborn:
   celeborn.metrics.prometheus.path: /metrics/prometheus
   celeborn.master.http.port: 9098
   celeborn.worker.http.port: 9096
-  # Security Fix: Enabled disk monitoring for production safety
-  celeborn.worker.monitor.disk.enabled: true
+  celeborn.worker.monitor.disk.enabled: false
   celeborn.shuffle.chunk.size: 8m
   celeborn.rpc.io.serverThreads: 64
   celeborn.rpc.io.numConnectionsPerPeer: 2
@@ -100,15 +96,12 @@ celeborn:
 # -- Celeborn environment variables
 environments:
   CELEBORN_MASTER_MEMORY: 2g
-  # Security Fix: Updated deprecated GC logging flags to modern equivalents
-  CELEBORN_MASTER_JAVA_OPTS: "-Xlog:gc*:gc-master.log -Dio.netty.leakDetectionLevel=advanced"
-  # Security Fix: Increased worker memory for better heap/offheap balance
-  CELEBORN_WORKER_MEMORY: 4g
+  CELEBORN_MASTER_JAVA_OPTS: "-XX:-PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:gc-master.out -Dio.netty.leakDetectionLevel=advanced"
+  CELEBORN_WORKER_MEMORY: 2g
   CELEBORN_WORKER_OFFHEAP_MEMORY: 12g
-  CELEBORN_WORKER_JAVA_OPTS: "-Xlog:gc*:gc-worker.log -Dio.netty.leakDetectionLevel=advanced"
+  CELEBORN_WORKER_JAVA_OPTS: "-XX:-PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:gc-worker.out -Dio.netty.leakDetectionLevel=advanced"
   CELEBORN_NO_DAEMONIZE: 1
-  # Security Fix: Made timezone configurable for global deployment flexibility
-  TZ: "UTC"
+  TZ: "Asia/Shanghai"
 
 # -- Specifies the DNS policy for Celeborn pods to use
 dnsPolicy: ClusterFirst
@@ -118,24 +111,22 @@ hostNetwork: false
 
 resources:
   # -- Pod resources for Celeborn master pods
-  # Security Fix: Added resource limits to prevent resource contention
-  master:
-    limits:
-      cpu: 2000m
-      memory: 4Gi
-    requests:
-      cpu: 1000m
-      memory: 2Gi
+  master: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
   # -- Pod resources for Celeborn worker pods
-  # Security Fix: Added resource limits based on workload requirements
-  worker:
-    limits:
-      cpu: 8000m
-      memory: 16Gi
-    requests:
-      cpu: 4000m
-      memory: 8Gi
+  worker: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 # -- Container security context
 securityContext:
@@ -226,7 +217,7 @@ podMonitor:
   podMetricsEndpoint:
     # Specifies scheme
     scheme: http
-    # Security Fix: Increased from 5s to 15s to reduce monitoring overhead
-    interval: 15s
+    # Specifies scrape interval
+    interval: 5s
     # Specifies port name
     portName: metrics

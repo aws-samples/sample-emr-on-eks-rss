@@ -1,17 +1,16 @@
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
-  # Security Fix: Renamed to match nodepool naming
-  name: celeborn-master-intel
+  name: celeborn-master-graviton
 spec:
   amiFamily: Bottlerocket
   amiSelectorTerms:
   - alias: bottlerocket@v1.41.0
   blockDeviceMappings:
-    # Root device - Security Fix: Increased from 4Gi to 20Gi for adequate OS operations
+    # Root device
     - deviceName: /dev/xvda
       ebs:
-        volumeSize: 20Gi
+        volumeSize: 4Gi
         volumeType: gp3
     # Data device: Container resources such as images and logs
     - deviceName: /dev/xvdb
@@ -23,20 +22,14 @@ spec:
     httpProtocolIPv6: disabled
     httpPutResponseHopLimit: 2
     httpTokens: required
-  # Security Fix: Use role selector instead of hardcoded role name for portability
-  roleSelectorTerms:
-  - tags:
-      karpenter.sh/discovery: "emr-on-eks-karpenter"
-      NodeType: "celeborn-master" 
+  role: karpenter-emr-on-eks-karpenter-20250701151023146500000019 
   securityGroupSelectorTerms:
-  - tags:
-      karpenter.sh/discovery: "emr-on-eks-karpenter"
+  - name: emr-on-eks-karpenter-node*
   subnetSelectorTerms:
   - tags:
       Name: emr-on-eks-karpenter-private*
   tags:
-    # Security Fix: Updated tag to match resource naming
-    InstanceType: celeborn-master-intel
+    InstanceType: celeborn-master-graviton
   userData: |
     [settings.bootstrap-containers.bear]
     mode = "once"
