@@ -28,7 +28,7 @@ fullnameOverride: ""
 # Specifies the Celeborn image to use
 image:
   # -- Image repository
-  repository: public.ecr.aws/dong-registry/apache-celeborn-server
+  repository: YOUR_IMAGE_URL
   # -- Image tag
   tag: 0.5 
   # -- Image pull policy

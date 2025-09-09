@@ -74,8 +74,9 @@ spec:
         - -c
         {{- $namespace := .Release.Namespace }}
         - >
+          POD_INDEX=${HOSTNAME##*-};
           until {{ range until (.Values.masterReplicas | int) }}
-          nslookup {{ include "celeborn.masterStatefulSetName" $ }}-{{ . }}.{{ include "celeborn.masterServiceName" $ }}.{{ $namespace }}.svc.{{ $.Values.cluster.name }}.local &&
+          [ "{{ . }}" = "$POD_INDEX" ] || nslookup {{ include "celeborn.masterStatefulSetName" $ }}-{{ . }}.{{ include "celeborn.masterServiceName" $ }}.{{ $namespace }}.svc.{{ $.Values.cluster.name }}.local &&
           {{- end }}
           true; do
             echo "waiting for master"; 

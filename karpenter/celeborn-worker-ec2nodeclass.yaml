@@ -22,7 +22,7 @@ spec:
     httpProtocolIPv6: disabled
     httpPutResponseHopLimit: 2
     httpTokens: required
-  role: karpenter-emr-on-eks-karpenter-20250701151023146500000019
+  role: <KARPENTER_IAM_ROLES>
   securityGroupSelectorTerms:
   - name: emr-on-eks-karpenter-node*
   subnetSelectorTerms:

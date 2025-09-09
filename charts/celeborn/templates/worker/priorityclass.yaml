@@ -22,5 +22,5 @@ metadata:
   name: {{ include "celeborn.workerPriorityClassName" . }}
   labels:
     {{- include "celeborn.labels" . | nindent 4 }}
-value: {{ .Values.priorityClass.worker.value }}
+value: {{ .Values.worker.priorityClass.value }}
 {{- end }}
