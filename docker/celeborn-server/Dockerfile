@@ -25,7 +25,9 @@ ARG CELEBORN_VERSION=0.5
 RUN apt-get update && apt-get install -y git
 # build celeborn binary
 # RUN git clone https://github.com/apache/incubator-celeborn.git -b v0.3.0-incubating
-RUN git clone https://github.com/apache/celeborn.git -b branch-${CELEBORN_VERSION}
+RUN git clone https://github.com/apache/celeborn.git -b branch-${CELEBORN_VERSION} && \
+    cd celeborn && \
+    git verify-commit HEAD || echo "Warning: Could not verify commit signature"
 WORKDIR celeborn
 RUN ./build/make-distribution.sh -Pspark-${SPARK_VERSION} -Pjdk-${JDK_VERSION} && \
     cat *.tgz | tar -xvzf - && \

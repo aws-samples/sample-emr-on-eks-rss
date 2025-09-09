@@ -87,7 +87,7 @@ celeborn:
 environments:
   # Security Fix: Aligned memory settings with resource specifications
   CELEBORN_MASTER_MEMORY: 512m
-  CELEBORN_WORKER_MEMORY: 2g
+  CELEBORN_WORKER_MEMORY: 1.5g
   CELEBORN_WORKER_OFFHEAP_MEMORY: 512m
   CELEBORN_NO_DAEMONIZE: 1
   # Security Fix: Made timezone configurable for global deployment flexibility

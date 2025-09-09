@@ -15,10 +15,9 @@ spec:
   mainClass: com.amazonaws.eks.tpcds.BenchmarkSQL
   mainApplicationFile: local:///usr/lib/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar
   arguments:
-    # Security Fix: Added documentation for placeholder values
-    # Replace <S3_BUCKET> with your S3 bucket name (e.g., my-company-data-bucket)
-    - "s3://<S3_BUCKET>/TPCDS-TEST-3T"
-    - "s3://<S3_BUCKET>/TPCDS-TEST-3T-RESULT"
+    # Use environment variables for bucket configuration
+    - "s3://{{ .Values.s3Bucket | default (env "S3_BUCKET") }}/TPCDS-TEST-3T"
+    - "s3://{{ .Values.s3Bucket | default (env "S3_BUCKET") }}/TPCDS-TEST-3T-RESULT"
     - "/opt/tpcds-kit/tools"
     - "parquet"
     - "3000"
@@ -50,8 +49,8 @@ spec:
 
     # Event logging
     spark.eventLog.enabled: "true"
-    # Security Fix: Parameterized bucket name to prevent bucket sniping vulnerability
-    spark.eventLog.dir: "s3://<EVENT_LOG_BUCKET>/spark-events/"
+    # Use environment variable for event log bucket
+    spark.eventLog.dir: "s3://{{ .Values.eventLogBucket | default (env "EVENT_LOG_BUCKET") }}/spark-events/"
     spark.kubernetes.driver.pod.name: "driver-celeborn-tpcds-benchmark"
     spark.kubernetes.executor.podNamePrefix: "clb-dra-track"
 
@@ -124,8 +123,8 @@ spec:
     cores: 2
     # Security Fix: Increased memory from 3g to 8g for 3TB TPCDS benchmark
     memory: "8g"
-    # Replace <SERVICE_ACCOUNT> with your Kubernetes service account name
-    serviceAccount: <SERVICE_ACCOUNT>
+    # Use environment variable for service account
+    serviceAccount: {{ .Values.serviceAccount | default (env "SERVICE_ACCOUNT") }}
     # Using Karpenter provisioner nodeSelectors and tolerations
     nodeSelector:
       NodeGroupType: "SparkComputeOptimized"
@@ -137,8 +136,8 @@ spec:
     cores: 8
     instances: 2
     memory: "16g"
-    # Replace <SERVICE_ACCOUNT> with your Kubernetes service account name
-    serviceAccount: <SERVICE_ACCOUNT>
+    # Use environment variable for service account
+    serviceAccount: {{ .Values.serviceAccount | default (env "SERVICE_ACCOUNT") }}
     # Using Karpenter provisioner nodeSelectors and tolerations
     nodeSelector:
       NodeGroupType: "SparkComputeOptimized"

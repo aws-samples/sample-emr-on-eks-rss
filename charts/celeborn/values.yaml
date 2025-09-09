@@ -28,9 +28,9 @@ fullnameOverride: ""
 # Specifies the Celeborn image to use
 image:
   # -- Image repository
-  repository: public.ecr.aws/dong-registry/apache-celeborn-server
+  repository: apache/celeborn
   # -- Image tag
-  tag: 0.5 
+  tag: 0.5.0 
   # -- Image pull policy
   # Security Fix: Changed from Always to IfNotPresent for better performance
   pullPolicy: IfNotPresent
@@ -135,7 +135,7 @@ resources:
       memory: 16Gi
     requests:
       cpu: 4000m
-      memory: 8Gi
+      memory: 12Gi
 
 # -- Container security context
 securityContext:

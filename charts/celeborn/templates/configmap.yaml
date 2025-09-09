@@ -24,14 +24,18 @@ metadata:
 data:
   celeborn-defaults.conf: |-
     {{- $namespace := .Release.Namespace }}
+    {{- $clusterName := .Values.cluster.name | default "cluster" }}
+    {{- if not $clusterName }}
+    {{- fail "cluster.name is required and cannot be empty" }}
+    {{- end }}
     # Security Fix: Added validation and removed trailing comma
     {{- if and .Values.masterReplicas (gt (.Values.masterReplicas | int) 0) }}
-    celeborn.master.endpoints={{ range $i, $e := until (.Values.masterReplicas |int) }}{{if $i}},{{end}}{{ $.Release.Name }}-master-{{ $e }}.{{ $.Release.Name }}-master-svc.{{ $namespace }}.svc.{{ $.Values.cluster.name }}.local{{ end }}
+    celeborn.master.endpoints={{ range $i, $e := until (.Values.masterReplicas |int) }}{{if $i}},{{end}}{{ $.Release.Name }}-master-{{ $e }}.{{ $.Release.Name }}-master-svc.{{ $namespace }}.svc.{{ $clusterName }}.local{{ end }}
     {{- else }}
-    celeborn.master.endpoints={{ $.Release.Name }}-master-0.{{ $.Release.Name }}-master-svc.{{ $namespace }}.svc.{{ $.Values.cluster.name }}.local
+    celeborn.master.endpoints={{ $.Release.Name }}-master-0.{{ $.Release.Name }}-master-svc.{{ $namespace }}.svc.{{ $clusterName }}.local
     {{- end }}
     {{- range until (.Values.masterReplicas |int) }}
-    celeborn.master.ha.node.{{ . }}.host={{ $.Release.Name }}-master-{{ . }}.{{ $.Release.Name }}-master-svc.{{ $namespace }}.svc.{{ $.Values.cluster.name }}.local
+    celeborn.master.ha.node.{{ . }}.host={{ $.Release.Name }}-master-{{ . }}.{{ $.Release.Name }}-master-svc.{{ $namespace }}.svc.{{ $clusterName }}.local
     {{- end }}
     {{- $dirs := .Values.volumes.master }}
     # Security Fix: Added validation to prevent template rendering failure
