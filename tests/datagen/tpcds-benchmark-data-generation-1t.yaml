@@ -55,10 +55,10 @@ spec:
     #     Exception in thread \"main\" io.fabric8.kubernetes.client.KubernetesClientException: An error has occurred
     #     Caused by: java.net.SocketTimeoutException: timeout
     # spark.kubernetes.local.dirs.tmpfs: "true"
-    spark.kubernetes.submission.connectionTimeout: "60000000"
-    spark.kubernetes.submission.requestTimeout: "60000000"
-    spark.kubernetes.driver.connectionTimeout: "60000000"
-    spark.kubernetes.driver.requestTimeout: "60000000"
+    spark.kubernetes.submission.connectionTimeout: "300000"
+    spark.kubernetes.submission.requestTimeout: "600000"
+    spark.kubernetes.driver.connectionTimeout: "300000"
+    spark.kubernetes.driver.requestTimeout: "600000"
     # spark.kubernetes.allocation.batch.size: "20" # default 5 but adjust according to your cluster size
     # -----------------------------------------------------
 

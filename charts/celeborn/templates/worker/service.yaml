@@ -28,5 +28,7 @@ spec:
     {{- include "celeborn.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/role: worker
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
   clusterIP: None
+  {{- end }}
   {{- include "celeborn.workerServicePort" . | nindent 2 }}

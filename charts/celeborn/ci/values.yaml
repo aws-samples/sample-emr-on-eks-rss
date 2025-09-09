@@ -24,7 +24,7 @@ image:
   # -- Image repository
   repository: apache/celeborn
   # -- Image tag
-  tag: latest
+  tag: 0.5.0
   # -- Image pull policy
   pullPolicy: IfNotPresent
 
@@ -84,9 +84,9 @@ celeborn:
 
 # -- Celeborn configurations
 environments:
-  CELEBORN_MASTER_MEMORY: 100m
-  CELEBORN_WORKER_MEMORY: 100m
-  CELEBORN_WORKER_OFFHEAP_MEMORY: 100m
+  CELEBORN_MASTER_MEMORY: 1g
+  CELEBORN_WORKER_MEMORY: 2g
+  CELEBORN_WORKER_OFFHEAP_MEMORY: 4g
   CELEBORN_NO_DAEMONIZE: 1
   TZ: "Asia/Shanghai"
 
@@ -100,19 +100,19 @@ resources:
   # -- Pod resources for Celeborn master pods
   master:
     limits:
-      cpu: 100m
-      memory: 800Mi
+      cpu: 500m
+      memory: 2Gi
     requests:
-      cpu: 100m
-      memory: 800Mi
+      cpu: 200m
+      memory: 1Gi
   # -- Pod resources for Celeborn worker pods
   worker:
     limits:
-      cpu: 100m
-      memory: 1Gi
+      cpu: 2
+      memory: 8Gi
     requests:
-      cpu: 100m
-      memory: 1Gi
+      cpu: 1
+      memory: 4Gi
 
 # -- Container security context
 securityContext:

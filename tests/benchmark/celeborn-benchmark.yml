@@ -48,7 +48,7 @@ spec:
 
     # Event logging
     spark.eventLog.enabled: "true"
-    spark.eventLog.dir: "s3://emr-on-eks-karpenter-emr-20250701145943686900000002/spark-events/"
+    spark.eventLog.dir: "s3://<S3_BUCKET>/spark-events/"
     spark.kubernetes.driver.pod.name: "driver-celeborn-tpcds-benchmark"
     spark.kubernetes.executor.podNamePrefix: "clb-dra-track"
 

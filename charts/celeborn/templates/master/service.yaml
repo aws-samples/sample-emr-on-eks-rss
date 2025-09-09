@@ -33,4 +33,6 @@ spec:
     protocol: TCP
     name: celeborn-master
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "ClusterIP" }}
   clusterIP: None
+  {{- end }}

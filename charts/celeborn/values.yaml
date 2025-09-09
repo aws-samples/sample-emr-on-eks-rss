@@ -111,22 +111,22 @@ hostNetwork: false
 
 resources:
   # -- Pod resources for Celeborn master pods
-  master: {}
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+  master:
+    limits:
+      cpu: 1
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 2Gi
 
   # -- Pod resources for Celeborn worker pods
-  worker: {}
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+  worker:
+    limits:
+      cpu: 4
+      memory: 16Gi
+    requests:
+      cpu: 2
+      memory: 8Gi
 
 # -- Container security context
 securityContext:
