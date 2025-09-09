@@ -33,4 +33,7 @@ spec:
     protocol: TCP
     name: celeborn-master
   type: {{ .Values.service.type }}
+  # Security Fix: Only set clusterIP None for explicitly headless services
+  {{- if and (eq .Values.service.type "ClusterIP") (.Values.service.headless | default false) }}
   clusterIP: None
+  {{- end }}

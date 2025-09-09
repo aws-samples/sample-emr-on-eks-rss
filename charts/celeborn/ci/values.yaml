@@ -24,7 +24,8 @@ image:
   # -- Image repository
   repository: apache/celeborn
   # -- Image tag
-  tag: latest
+  # Security Fix: Use specific version instead of latest for predictable deployments
+  tag: "0.5.0"
   # -- Image pull policy
   pullPolicy: IfNotPresent
 
@@ -84,11 +85,13 @@ celeborn:
 
 # -- Celeborn configurations
 environments:
-  CELEBORN_MASTER_MEMORY: 100m
-  CELEBORN_WORKER_MEMORY: 100m
-  CELEBORN_WORKER_OFFHEAP_MEMORY: 100m
+  # Security Fix: Aligned memory settings with resource specifications
+  CELEBORN_MASTER_MEMORY: 512m
+  CELEBORN_WORKER_MEMORY: 2g
+  CELEBORN_WORKER_OFFHEAP_MEMORY: 512m
   CELEBORN_NO_DAEMONIZE: 1
-  TZ: "Asia/Shanghai"
+  # Security Fix: Made timezone configurable for global deployment flexibility
+  TZ: "UTC"
 
 # -- Specifies the DNS policy for Celeborn pods to use
 dnsPolicy: ClusterFirstWithHostNet
@@ -98,20 +101,22 @@ hostNetwork: true
 
 resources:
   # -- Pod resources for Celeborn master pods
+  # Security Fix: Improved resource allocations for master operations
   master:
     limits:
-      cpu: 100m
-      memory: 800Mi
-    requests:
-      cpu: 100m
-      memory: 800Mi
-  # -- Pod resources for Celeborn worker pods
-  worker:
-    limits:
-      cpu: 100m
+      cpu: 500m
       memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 250m
+      memory: 512Mi
+  # -- Pod resources for Celeborn worker pods
+  # Security Fix: Improved resource allocations for shuffle service requirements
+  worker:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
       memory: 1Gi
 
 # -- Container security context

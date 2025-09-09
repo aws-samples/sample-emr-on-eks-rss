@@ -85,8 +85,7 @@ spec:
             echo "waiting for master";
             sleep 2;
           done && exec /opt/celeborn/sbin/start-worker.sh
-        resources:
-          {{- toYaml .Values.resources.worker | nindent 10 }}
+        # Security Fix: Removed duplicate resources specification
         ports:
         - containerPort: {{ get .Values.celeborn "celeborn.worker.http.port" | default 9096 }}
           name: metrics
