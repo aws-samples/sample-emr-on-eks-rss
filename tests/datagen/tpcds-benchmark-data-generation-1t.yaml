@@ -19,7 +19,7 @@ spec:
   mainApplicationFile: local:///opt/spark/examples/jars/eks-spark-benchmark-assembly-1.0.jar
   arguments:
     # TPC-DS data location
-    - "s3a://{{ .Values.s3Bucket | default (env "S3_BUCKET") }}/TPCDS-TEST-3T"
+    - "s3a://<REPLACE-WITH-YOUR-S3BUCKET-NAME>/TPCDS-TEST-3T"
     # Path to kit in the docker image
     - "/opt/tpcds-kit/tools"
     # Data Format
@@ -70,8 +70,7 @@ spec:
     # This is using the temp storage on the node.
     # if you are using NVMe SSD then karpenter will configure the RAID0 under /mnt/k8s-disks/0 and copies the shuffle data to this location
     - name: spark-local-dir-1
-      emptyDir:
-        sizeLimit: 100Gi
+      emptyDir: {}
   driver:
     volumeMounts:
       - name: spark-local-dir-1

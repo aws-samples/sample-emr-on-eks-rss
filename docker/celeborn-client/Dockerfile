@@ -26,9 +26,7 @@ ARG JDK_VERSION=8
 # install maven
 RUN apt-get update && apt-get install -y git
 # build celeborn binary
-RUN git clone https://github.com/apache/celeborn.git -b branch-${CELEBORN_VERSION} && \
-    cd celeborn && \
-    git verify-commit HEAD || echo "Warning: Could not verify commit signature"
+RUN git clone https://github.com/apache/celeborn.git -b branch-${CELEBORN_VERSION}
 WORKDIR celeborn
 RUN ./build/make-distribution.sh -Pspark-${SPARK_VERSION} -Pjdk-${JDK_VERSION} && \
     cat *.tgz | tar -xvzf - && \
